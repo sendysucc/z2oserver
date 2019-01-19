@@ -1,0 +1,8 @@
+srvroot = "$SRVROOT/server/"
+snroot = "$SRVROOT/skynet/"
+
+luaservice = snroot .. "service/?.lua;" .. srvroot .. "entry/?.lua;"
+lualoader = snroot .. "lualib/loader.lua"
+lua_path = snroot .. "lualib/?.lua;" .. snroot .. "lualib/?/init.lua;" .. srvroot .. "libs/?.lua;"
+lua_cpath = snroot .. "luaclib/?.so"
+cpath = snroot .. "cservice/?.so"
