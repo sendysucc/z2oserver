@@ -1,0 +1,46 @@
+.package {
+    type 0 : integer
+    session 1 : integer
+}
+
+handshake 1 {
+    response {
+        challenge 0 : string
+    }
+}
+
+exeys 2 {
+    request {
+        cye 0 : string
+    }
+    response {
+        sye 0 : string
+    }
+}
+
+exse 3 {
+    request {
+        cse 0 : string
+    }
+    response {
+        errcode 0 : integer
+    }
+}
+
+register 4 {
+    request {
+
+    }
+    response {
+
+    }
+}
+
+login 5 {
+    request {
+
+    }
+    response {
+
+    }
+}
