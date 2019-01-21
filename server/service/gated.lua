@@ -19,20 +19,24 @@ local function sendmsg(fd,msg)
     socketdriver.send(fd,package)
 end
 
+local function closeclient(fd)
+    gateserver.closeclient(fd)
+    connection[fd] = nil
+end
+
 function handler.open(source,conf)
 
 end
 
 function handler.message(fd,msg,sz)
     local c = assert(connection[fd])
+    msg = crypt.base64decode(skynet.tostring(msg,sz))
     if c.secret then
-        msg = crypt.desdecode(c.secret, crypt.base64decode(skynet.tostring(msg,sz)))
-    else
-        msg = crypt.base64decode(skynet.tostring(msg,sz))
+        msg = crypt.desdecode(c.secret, msg)
     end
     
     if c.agent then
-        local authobj = snax.bind(c.agent.handle,"auth")
+        local authobj = snax.bind(c.agent.handle,c.agent.type )
         local resp = authobj.req.message(fd,msg,sz)
         if resp then
             sendmsg(fd,resp)
@@ -46,13 +50,17 @@ function handler.connect(fd,addr)
         addr = addr,
         agent = authobj,
     }
-
     connection[fd] = c
     gateserver.openclient(fd)
 end
 
 function handler.disconnect(fd)
-
+    local c = assert(connection[fd])
+    if c.agent then
+        local obj = snax.bind(c.agent.handle, c.agent.type)
+        local ret = obj.req.disconnect(fd)
+        connection[fd] = nil
+    end
 end
 
 function handler.error(fd,msg)
@@ -81,6 +89,10 @@ end
 function CMD.forward(source,fd,obj)
     local c = assert(connection[fd])
     c.agent = obj
+end
+
+function CMD.closeclient(source,fd)
+    closeclient(fd)
 end
 
 gateserver.start(handler)

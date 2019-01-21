@@ -15,7 +15,6 @@ local secret = nil
 local session = 0
 local last = ""
 
-
 local function send_package(fd,pack)
     local package = string.pack(">s2",pack)
     socket.send(fd,package)
@@ -24,12 +23,10 @@ end
 local function send_request(name,args)
     session = session + 1
 	local str = request(name,args, session)
-	
 	if secret then
 		str = crypt.desencode(secret,str)
     end
     str = crypt.base64encode( str)
-
     send_package(fd,str)
 end
 
@@ -105,6 +102,22 @@ print(serverkey)
 
 local tempsecret = crypt.dhsecret(serverkey,clientkey)
 
-send_request('exse',{ tempsecret = crypt.hmac64(challenge,tempsecret) })
+send_request('exse',{ cse = crypt.hmac64(challenge,tempsecret) })
 rets = receive_data()
 print('--->errcode:',rets.errcode)
+
+if rets.errcode ~= 0 then
+	os.exit()
+end
+
+send_request('verifycode')
+rets = receive_data()
+print('----->verifycode:', rets.code)
+local verifycode = rets.code
+
+local phone = '15865671320'
+local password = 'sendysucc'
+
+send_request('register', { cellphone = phone, password = password, verifycode = verifycode })
+rets = receive_data()
+print('------->register :', rets.errcode)
