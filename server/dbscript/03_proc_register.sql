@@ -30,12 +30,7 @@ label_reg:begin
         select promoteid into o_promoteid from Promote where Promote.promoteid = 1;
     end if;
 
-    if length(passwd) != 40 then
-        set errcode = 5;    #password error.
-        select errcode as 'errcode';
-        leave label_reg;
-    end if;
-
+  
     select userid into o_userid from User where User.cellphone = cellphone;
     if ifnull(o_userid,0) != 0 then
         set errcode = 6;  #user already exists
@@ -52,7 +47,7 @@ label_reg:begin
     select concat('z2o玩家',o_newuserid) into o_nickname;
 
     insert into User(userid,username,nickname , avatoridx, gender,cellphone,password, gold, diamond,createtime,disable,agentid,promoteid,isrobot) 
-        value( o_newuserid ,cellphone, o_nickname, 1 , 1,cellphone, passwd, 0 , 0, now(), false, o_agentid, o_promoteid, 0);
+        value( o_newuserid ,cellphone, o_nickname, 1 , 1,cellphone, sha1(passwd), 0 , 0, now(), false, o_agentid, o_promoteid, 0);
 
     select errcode as 'errcode';
 end

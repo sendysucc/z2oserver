@@ -4,6 +4,7 @@ local loadproto = require "loadproto"
 local sproto = require "sproto"
 local crypt = require "skynet.crypt"
 local errs = require "errorcodes"
+local utils = require "utils"
 
 local sp_host
 local sp_request
@@ -19,6 +20,7 @@ local function close_client(fd)
     local c = clients[fd]
     if c then
         local addr = skynet.queryservice("gated")
+        skynet.sleep(50)
         skynet.send(addr,"lua","closeclient",fd)
         clients[fd] = nil
     end
@@ -106,10 +108,36 @@ function REQUEST.verifycode(fd,args)
 end
 
 function REQUEST.register(fd,args)
+    local cellphone = args.cellphone
+    local password = args.password
+    local verifycode = args.verifycode
+    local promotecode = args.promotecode or 'uidsystem'
+    local agentcode = args.agentcode or 'adv1301'
+
+    local errcode = errs.code.SUCCESS
+    if not cellphone or not password or not verifycode or len(cellphone) ~= 11 then
+        errcode = errs.code.INVALIDREGISTERINFO
+        close_client(fd)
+        return { errcode = errcode }
+    end
+    
+    local c = clients[fd]
+    if not c.verifycode then
+        errcode = errs.code.ILLEGALREGISTER
+        close_client(fd)
+        return { errcode = errcode }
+    end
+    if c.verifycode ~= verifycode then
+        errcode = errs.code.INVALIDVERIFYCODE
+        close_client(fd)
+        return { errcode = errcode }
+    end
+
+    local ret = utils.getmgr('dbmgr').req.register(cellphone,password,promotecode,agentcode)
+    
 
 end
 
 function REQUEST.login(fd,args)
 
 end
-
