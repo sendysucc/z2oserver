@@ -110,14 +110,33 @@ if rets.errcode ~= 0 then
 	os.exit()
 end
 
-send_request('verifycode')
+
+local phone = '15865671320'
+
+send_request('verifycode', { cellphone = phone })
 rets = receive_data()
 print('----->verifycode:', rets.code)
 local verifycode = rets.code
 
-local phone = '15865671320'
+
 local password = 'sendysucc'
 
 send_request('register', { cellphone = phone, password = password, verifycode = verifycode })
 rets = receive_data()
 print('------->register :', rets.errcode)
+
+send_request('login',{cellphone = phone, password = password})
+rets = receive_data()
+print('------->login:',rets.errcode)
+for k,v in pairs(rets) do
+	print(k,v)
+end
+
+
+host = sproto.new( loadproto.getprotobin("./server/protocol/hall_s2c.spt") ):host "package"
+request = host:attach(sproto.new( loadproto.getprotobin("./server/protocol/hall_c2s.spt")) )
+
+
+send_request("gamelist")
+rets = receive_data()
+print('-------->gamelist',rets.errcode)

@@ -20,9 +20,9 @@ label_reg:begin
     set o_userid = 0;
     set o_maxuserid = 0;
 
-    select agentid into o_agentid from Agent where Agent.agentid = agentcode;
+    select agentid into o_agentid from Agent where Agent.code = agentcode;
     if ifnull(o_agentid,0) <=> 0 then
-        select agentid into o_agentid from Agent where Agent.aigentid = 1;
+        select agentid into o_agentid from Agent where Agent.code = 'adv1301';
     end if;
 
     select promoteid into o_promoteid from Promote where Promote.code = promotecode;
@@ -33,7 +33,7 @@ label_reg:begin
   
     select userid into o_userid from User where User.cellphone = cellphone;
     if ifnull(o_userid,0) != 0 then
-        set errcode = 6;  #user already exists
+        set errcode = 8;  #user already exists
         select errcode as 'errcode';
         leave label_reg;
     end if;
@@ -47,7 +47,7 @@ label_reg:begin
     select concat('z2o玩家',o_newuserid) into o_nickname;
 
     insert into User(userid,username,nickname , avatoridx, gender,cellphone,password, gold, diamond,createtime,disable,agentid,promoteid,isrobot) 
-        value( o_newuserid ,cellphone, o_nickname, 1 , 1,cellphone, sha1(passwd), 0 , 0, now(), false, o_agentid, o_promoteid, 0);
+        value( o_newuserid ,cellphone, o_nickname, 1 , 1,cellphone, passwd, 0 , 0, now(), false, o_agentid, o_promoteid, 0);
 
     select errcode as 'errcode';
 end

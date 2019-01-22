@@ -1,10 +1,16 @@
 local skynet = require "skynet"
 local snax = require "skynet.snax"
 local mysql = require "skynet.db.mysql"
+local errs = require "errorcodes"
+
 local db
 
 local function escape(param)
     return mysql.quote_sql_str(param)
+end
+
+local function dberror(errno,sqlstate)
+    skynet.error('[db] register procedure errorno :' .. errno .. ", code:" .. sqlstate)
 end
 
 function init(...)
@@ -31,9 +37,20 @@ function response.register(cellphone,password,promotecode,agentcode)
     local sql_str = string.format("call proc_register(%s,%s,%s,%s)",escape(cellphone), escape(password),escape(promotecode),escape(agentcode))
     local ret = db:query(sql_str)
     if ret.badresult then
-        skynet.error('[db] register procedure errorno :' .. ret.errno .. ", code:" .. ret.sqlstate)
-        return errcode.code.EXECUTE_DB_SCRIPT_ERROR
+        dberror(ret.errno,ret.sqlstate)
+        return errs.code.EXECUTE_DB_SCRIPT_ERROR
     else
         return (ret[1][1].errcode)
+    end
+end
+
+function response.login(cellphone,password)
+    local sql_str = string.format("call proc_login(%s,%s)",escape(cellphone),escape(password))
+    local ret = db:query(sql_str)
+    if ret.badresult then
+        dberror(ret.errno,ret.sqlstate)
+        return errs.code.EXECUTE_DB_SCRIPT_ERROR
+    else
+        return errs.code.SUCCESS,ret[1][1]
     end
 end

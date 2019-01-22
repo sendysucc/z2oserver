@@ -28,6 +28,9 @@ exse 3 {
 }
 
 verifycode 4 {
+    request {
+        cellphone 0 : string
+    }
     response {
         errcode 0 : integer
         code 1 : string
@@ -49,9 +52,18 @@ register 5 {
 
 login 6 {
     request {
-
+        cellphone 0 : string
+        password 1 : string
     }
     response {
-
+        errcode 0 : integer
+        userid 1 : integer
+        nickname 2 : string
+        avatoridx 3 : integer
+        gender 4 : integer
+        cellphone 5 : string
+        password 6 : string
+        gold 7 : integer
+        diamond 8 : integer
     }
 }

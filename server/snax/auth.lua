@@ -5,6 +5,7 @@ local sproto = require "sproto"
 local crypt = require "skynet.crypt"
 local errs = require "errorcodes"
 local utils = require "utils"
+local playermgr = require "playermgr"
 
 local sp_host
 local sp_request
@@ -37,6 +38,16 @@ local function genverifycode()
     return math.random(0,9) .. math.random(0,9) .. math.random(0,9) .. math.random(0,9)
 end
 
+local function sha1(text)
+	local c = crypt.sha1(text)
+	return crypt.hexencode(c)
+end
+
+local function hmac_sha1(key, text)
+	local c = crypt.hmac_sha1(key, text)
+	return crypt.hexencode(c)
+end
+
 function init(...)
     sp_host = sproto.new( loadproto.getprotobin("./protocol/auth_c2s.spt") ):host "package"
     sp_request = sp_host:attach(sproto.new( loadproto.getprotobin("./protocol/auth_s2c.spt") ))
@@ -64,7 +75,7 @@ end
 --[[
     在认证的时候断开连接，并没有什么需要处理，只需要清理客户端的连接信息即可.
 ]]
-function accept.disconnect(fd)
+function response.disconnect(fd)
     clear_client(fd)
     return errs.code.SUCCESS
 end
@@ -98,6 +109,7 @@ end
 
 function REQUEST.verifycode(fd,args)
     local c = assert(clients[fd])
+    c.cellphone = args.cellphone
     if c.vctime and ( skynet.now() - c.vctime ) < 100 * 120 then
         return {errcode = errs.code.OPERTOOFAST}
     end
@@ -115,29 +127,69 @@ function REQUEST.register(fd,args)
     local agentcode = args.agentcode or 'adv1301'
 
     local errcode = errs.code.SUCCESS
-    if not cellphone or not password or not verifycode or len(cellphone) ~= 11 then
+    if not cellphone or not password or not verifycode or string.len(cellphone) ~= 11 then
         errcode = errs.code.INVALIDREGISTERINFO
-        close_client(fd)
         return { errcode = errcode }
     end
     
     local c = clients[fd]
     if not c.verifycode then
         errcode = errs.code.ILLEGALREGISTER
-        close_client(fd)
+        return { errcode = errcode }
+    end
+    if c.cellphone ~= cellphone then
+        errcode = errs.code.PHONE_NUMBER_NOT_MATCHED
         return { errcode = errcode }
     end
     if c.verifycode ~= verifycode then
         errcode = errs.code.INVALIDVERIFYCODE
-        close_client(fd)
         return { errcode = errcode }
     end
-
+    if not password or string.len(password) <= 6 then
+        errcode = errs.code.PASSWORD_NOT_ALLOWED
+        return { errcode = errcode }
+    end
+    password = sha1(password)
     local ret = utils.getmgr('dbmgr').req.register(cellphone,password,promotecode,agentcode)
-    
-
+    return {errcode = ret}
 end
 
 function REQUEST.login(fd,args)
+    local phone = args.cellphone
+    local password = args.password
+    local errcode = errs.code.SUCCESS
 
+    if not phone or not password then
+        return { errcode = errs.code.LOGIN_INFO_ERR }
+    end
+
+    --check break offline
+
+    -- normal login
+    local errcode,userinfo = utils.getmgr('dbmgr').req.login(phone,sha1(password))
+    if errcode ~= errs.code.SUCCESS then
+        return { errcode = errcode }
+    else
+        userinfo.errcode = nil  --删掉errcode 字段
+        local resp = {}
+        resp.errcode = errs.code.SUCCESS
+        resp.userid = userinfo.userid
+        resp.nickname = userinfo.nickname
+        resp.avatoridx = userinfo.avatoridx
+        resp.gender = userinfo.gender
+        resp.cellphone = userinfo.cellphone
+        resp.password = userinfo.password
+        resp.gold = userinfo.gold
+        resp.diamond = userinfo.diamond
+
+        playermgr.addplayer(userinfo)
+
+        local hallobj = snax.queryservice('hall')
+        local addr = skynet.queryservice("gated")
+        skynet.send(addr,"lua","forward",fd,hallobj,userinfo.userid)
+
+        clear_client(fd)
+
+        return resp
+    end
 end

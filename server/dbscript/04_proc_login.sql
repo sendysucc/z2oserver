@@ -26,13 +26,13 @@ label_login:begin
 
     select password into o_paswd from User where User.cellphone = cellphone;
     if ifnull(o_paswd,'') <=> '' then
-        set errcode = 8;    #cellphone not exists
+        set errcode = 11;    #cellphone not exists
         select errcode as 'errcode';
         leave label_login;
     end if;
 
     if o_paswd != passwd then
-        set errcode = 7;
+        set errcode = 12;
         select errcode as 'errcode';
         leave label_login;
     end if;
@@ -41,7 +41,7 @@ label_login:begin
         o_userid, o_username, o_nickname, o_gender, o_createtime, o_disable, o_agentid ,o_promoteid, o_avatoridx, o_gold, o_diamond from User where User.cellphone = cellphone;
 
     if ifnull(o_disable,0) <=> 1 then
-        set errcode = 9;
+        set errcode = 13;
         select errcode as 'errcode';
         leave label_login;
     end if;

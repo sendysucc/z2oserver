@@ -37,7 +37,8 @@ function handler.message(fd,msg,sz)
     
     if c.agent then
         local authobj = snax.bind(c.agent.handle,c.agent.type )
-        local resp = authobj.req.message(fd,msg,sz)
+        local id = c.uid or fd
+        local resp = authobj.req.message(id,msg,sz)
         if resp then
             sendmsg(fd,resp)
         end 
@@ -47,18 +48,20 @@ end
 function handler.connect(fd,addr)
     local c = {
         fd = fd,
-        addr = addr,
+        addr = string.match(addr,'(%d+%.%d+%.%d+%.%d+):%d+'),
         agent = authobj,
     }
     connection[fd] = c
     gateserver.openclient(fd)
+    print('-0---->client:',c.addr)
 end
 
 function handler.disconnect(fd)
     local c = assert(connection[fd])
     if c.agent then
         local obj = snax.bind(c.agent.handle, c.agent.type)
-        local ret = obj.req.disconnect(fd)
+        local id = c.uid or fd
+        local ret = obj.req.disconnect(id)
         connection[fd] = nil
     end
 end
@@ -86,9 +89,10 @@ function CMD.setsecret(source,secret)
 
 end
 
-function CMD.forward(source,fd,obj)
+function CMD.forward(source,fd,obj,uid)
     local c = assert(connection[fd])
     c.agent = obj
+    c.uid = uid
 end
 
 function CMD.closeclient(source,fd)

@@ -5,6 +5,9 @@ skynet.start(function()
     skynet.error("main entry")
 
     snax.uniqueservice("dbmgr")
+
+    snax.uniqueservice("hall")
+
     local auth = snax.newservice("auth")
 
     local gate = skynet.uniqueservice('gated')
