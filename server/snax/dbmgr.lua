@@ -54,3 +54,25 @@ function response.login(cellphone,password)
         return errs.code.SUCCESS,ret[1][1]
     end
 end
+
+function response.gamelist()
+    local sql_str = string.format("select * from Game;")
+    local ret = db:query(sql_str)
+    if ret.badresult then
+        dberror(ret.errno,ret.sqlstate)
+        return errs.code.EXECUTE_DB_SCRIPT_ERROR
+    else
+        return errs.code.SUCCESS,ret[1][1]
+    end
+end
+
+function response.roomlist()
+    local sql_str = string.format("select * from GameRoom;")
+    local ret = db:query(sql_str)
+    if ret.badresult then
+        dberror(ret.errno,ret.sqlstate)
+        return errs.code.EXECUTE_DB_SCRIPT_ERROR
+    else
+        return errs.code.SUCCESS,ret[1][1]
+    end
+end
