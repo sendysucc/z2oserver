@@ -163,9 +163,6 @@ function REQUEST.login(fd,args)
         return { errcode = errs.code.LOGIN_INFO_ERR }
     end
 
-    --check break offline
-    local offline = utils.getmgr('redismgr').req.checkbreakline(cellphone)
-
     -- normal login
     local errcode,userinfo = utils.getmgr('dbmgr').req.login(phone,sha1(password))
     if errcode ~= errs.code.SUCCESS then

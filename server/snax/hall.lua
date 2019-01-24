@@ -32,13 +32,6 @@ end
 
 function response.disconnect(uid)
     print('=---------<disconnect')
-    playermgr.update(uid,"gold",100)
-    
-    local obj = playermgr.getplayer(uid)
-    
-    for k,v in pairs(obj) do
-        print(k,v)
-    end
 
     print('-------> disconnected :', uid)
 end
