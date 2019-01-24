@@ -6,6 +6,8 @@ skynet.start(function()
 
     snax.uniqueservice("dbmgr")
 
+    snax.uniqueservice("redismgr")
+
     snax.uniqueservice("hall")
 
     local auth = snax.newservice("auth")
