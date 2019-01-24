@@ -164,6 +164,7 @@ function REQUEST.login(fd,args)
     end
 
     --check break offline
+    local offline = utils.getmgr('redismgr').req.checkbreakline(cellphone)
 
     -- normal login
     local errcode,userinfo = utils.getmgr('dbmgr').req.login(phone,sha1(password))
@@ -171,18 +172,26 @@ function REQUEST.login(fd,args)
         return { errcode = errcode }
     else
         userinfo.errcode = nil  --删掉errcode 字段
-        local resp = {}
-        resp.errcode = errs.code.SUCCESS
-        resp.userid = userinfo.userid
-        resp.nickname = userinfo.nickname
-        resp.avatoridx = userinfo.avatoridx
-        resp.gender = userinfo.gender
-        resp.cellphone = userinfo.cellphone
-        resp.password = userinfo.password
-        resp.gold = userinfo.gold
-        resp.diamond = userinfo.diamond
+        local uinfos = {}
+        uinfos.errcode = errs.code.SUCCESS
+        uinfos.userid = userinfo.userid
+        uinfos.nickname = userinfo.nickname
+        uinfos.avatoridx = userinfo.avatoridx
+        uinfos.gender = userinfo.gender
+        uinfos.cellphone = userinfo.cellphone
+        uinfos.password = userinfo.password
+        uinfos.gold = userinfo.gold
+        uinfos.diamond = userinfo.diamond
 
-        playermgr.addplayer(userinfo)
+        print('------> userid:', uinfos.userid)
+
+        local resp 
+        local retcode,breakuser = utils.getmgr('redismgr').req.checkbreakline(uinfos.userid)
+        if retcode == errs.code.SUCCESS then
+            resp = uinfos
+        else
+            resp = breakuser
+        end
 
         local hallobj = snax.queryservice('hall')
         local addr = skynet.queryservice("gated")

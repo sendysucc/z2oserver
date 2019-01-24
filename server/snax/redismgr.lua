@@ -1,9 +1,10 @@
 local skynet = require "skynet"
 local redis = require "skynet.db.redis"
 local snax = require "skynet.snax"
+local errs = require "errorcodes"
 
 local db
-
+local prefix_player = "Player:"
 --[[
     将一个 key-value 的 table 转为 k,v 顺序的数组
     如 old_table = {name = "sendy", age = 10} :
@@ -24,6 +25,12 @@ local function reverseT(origin_table)
         newT[origin_table[i*2 - 1]] = origin_table[i*2]
     end
     return newT
+end
+
+local function getPlayer(uid)
+    local key = prefix_player .. uid
+    local res = db:hgetall(key)
+    return reverseT(res)
 end
 
 function init(...)
@@ -50,5 +57,13 @@ function init(...)
     -- for k,v in pairs(reverseT(t)) do
     --     print(k,v)
     -- end
+end
 
+function response.checkbreakline(uid)
+    local userinfo = reverseT( getPlayer(uid) )
+    if not userinfo.userid then -- not breakline
+        return errs.code.SUCCESS, nil
+    else
+        return errs.code.PLAYER_BREAKLINE, userinfo
+    end
 end

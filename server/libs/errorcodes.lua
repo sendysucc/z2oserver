@@ -16,6 +16,7 @@ error.code = {
     PASSWORD_MISS = 12,
     ACCOUNT_FORBIDDEN = 13,
     LOGIN_INFO_ERR = 14,
+    PLAYER_BREAKLINE = 15,
 
 }
 
@@ -35,6 +36,7 @@ error.reason = {
     [error.code.PASSWORD_MISS] = '密码错误',
     [error.code.ACCOUNT_FORBIDDEN] = '账户被禁用',
     [error.code.LOGIN_INFO_ERR] = '请提供账户和密码',
+    [error.code.PLAYER_BREAKLINE] = '玩家短线重新登录',
 
 }
 
