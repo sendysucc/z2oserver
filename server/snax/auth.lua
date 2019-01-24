@@ -163,8 +163,13 @@ function REQUEST.login(fd,args)
         return { errcode = errs.code.LOGIN_INFO_ERR }
     end
 
-    -- normal login
-    local errcode,userinfo = utils.getmgr('dbmgr').req.login(phone,sha1(password))
+    ---------need to continue:
+    local errcode = errs.code.SUCCESS
+    local userinfo
+    --login from redis first
+    
+    -- login from mysql
+    errcode,userinfo = utils.getmgr('dbmgr').req.login(phone,sha1(password))
     if errcode ~= errs.code.SUCCESS then
         return { errcode = errcode }
     else
@@ -180,12 +185,11 @@ function REQUEST.login(fd,args)
         uinfos.gold = userinfo.gold
         uinfos.diamond = userinfo.diamond
 
-        print('------> userid:', uinfos.userid)
-
         local resp 
         local retcode,breakuser = utils.getmgr('redismgr').req.checkbreakline(uinfos.userid)
         if retcode == errs.code.SUCCESS then
             resp = uinfos
+            utils.getmgr('redismgr').post.addPlayer(userinfo)
         else
             resp = breakuser
         end
