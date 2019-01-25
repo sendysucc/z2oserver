@@ -154,6 +154,15 @@ function REQUEST.register(fd,args)
     return {errcode = ret}
 end
 
+local function filluserdata(orginUser)
+    local newUser = {}
+    for k,v in pairs(orginUser) do
+        newUser[k] = v
+    end
+
+    return newUser
+end
+
 function REQUEST.login(fd,args)
     local phone = args.cellphone
     local password = args.password
@@ -163,43 +172,36 @@ function REQUEST.login(fd,args)
         return { errcode = errs.code.LOGIN_INFO_ERR }
     end
 
-    ---------need to continue:
-    local errcode = errs.code.SUCCESS
-    local userinfo
+    password = sha1(password)
+
+    local resp = {}
     --login from redis first
-    
-    -- login from mysql
-    errcode,userinfo = utils.getmgr('dbmgr').req.login(phone,sha1(password))
-    if errcode ~= errs.code.SUCCESS then
-        return { errcode = errcode }
-    else
-        userinfo.errcode = nil  --删掉errcode 字段
-        local uinfos = {}
-        uinfos.errcode = errs.code.SUCCESS
-        uinfos.userid = userinfo.userid
-        uinfos.nickname = userinfo.nickname
-        uinfos.avatoridx = userinfo.avatoridx
-        uinfos.gender = userinfo.gender
-        uinfos.cellphone = userinfo.cellphone
-        uinfos.password = userinfo.password
-        uinfos.gold = userinfo.gold
-        uinfos.diamond = userinfo.diamond
-
-        local resp 
-        local retcode,breakuser = utils.getmgr('redismgr').req.checkbreakline(uinfos.userid)
-        if retcode == errs.code.SUCCESS then
-            resp = uinfos
-            utils.getmgr('redismgr').post.addPlayer(userinfo)
-        else
-            resp = breakuser
+    local redis_user = utils.getmgr('redismgr').req.getPlayerbyPhone(phone)
+    if redis_user then 
+        print('---------->login from redis')
+        if password ~= redis_user.password then
+            return { errcode = errs.code.PASSWORD_MISS }
         end
+        resp = redis_user
+    else
+        print('---------->login from mysql')
+        local _errcode, mysql_user = utils.getmgr('dbmgr').req.login(phone,password)
+        if errcode ~= errs.code.SUCCESS then
+            return { errcode = _errcode }
+        end
+        
+        resp = filluserdata(mysql_user)
 
-        local hallobj = snax.queryservice('hall')
-        local addr = skynet.queryservice("gated")
-        skynet.send(addr,"lua","forward",fd,hallobj,userinfo.userid)
-
-        clear_client(fd)
-
-        return resp
+        mysql_user.errcode = nil
+        --add player to redis
+        utils.getmgr('redismgr').post.addPlayer(mysql_user)
     end
+
+    local hallobj = snax.queryservice('hall')
+    local addr = skynet.queryservice("gated")
+    skynet.send(addr,"lua","forward",fd,hallobj,resp.userid)
+
+    clear_client(fd)
+
+    return resp
 end

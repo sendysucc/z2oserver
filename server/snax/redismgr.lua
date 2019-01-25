@@ -27,7 +27,7 @@ local function reverseT(origin_table)
     return newT
 end
 
-local function getPlayerbyId(uid)
+local function _getPlayerbyId(uid)
     -- local mytes = db:keys("*")
     -- print('-------keys----->:',mytes)
     -- print('-------keys----->: len = ',#mytes)
@@ -40,16 +40,7 @@ local function getPlayerbyId(uid)
     return reverseT(res)
 end
 
-local function getPlayerbyPhone(phone)
-    local keys = db:keys("Player:*")
-    for k,val in pairs(keys) do
-        local userinfo = reverseT(db:hgetall(val))
-        if userinfo.cellphone == phone then
-            return userinfo
-        end
-    end
-    return nil
-end
+
 
 function init(...)
     local conf = {
@@ -78,7 +69,7 @@ function init(...)
 end
 
 function response.checkbreakline(uid)
-    local userinfo = reverseT( getPlayerbyId(uid) )
+    local userinfo =  _getPlayerbyId(uid) 
     if not userinfo.userid then -- not breakline
         return errs.code.SUCCESS, nil
     else
@@ -89,4 +80,20 @@ end
 function accept.addPlayer(userinfo)
     local key = prefix_player .. userinfo.userid
     db:hmset(key, table.unpack(convertT(userinfo)) )
+end
+
+
+function response.getPlayerbyPhone(phone)
+    local keys = db:keys("Player:*")
+    for k,val in pairs(keys) do
+        local userinfo = reverseT(db:hgetall(val))
+        if userinfo.cellphone == phone then
+            return userinfo
+        end
+    end
+    return nil
+end
+
+function response.getPlayerbyId(uid)
+    return _getPlayerbyId(uid)
 end
