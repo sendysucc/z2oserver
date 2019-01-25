@@ -53,7 +53,6 @@ function handler.connect(fd,addr)
     }
     connection[fd] = c
     gateserver.openclient(fd)
-    print('-0---->client:',c.addr)
 end
 
 function handler.disconnect(fd)

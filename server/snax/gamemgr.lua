@@ -1,15 +1,18 @@
 local skynet = require "skynet"
-local snax = requrie "skynet.snax"
+local snax = require "skynet.snax"
 local errs = require "errorcodes"
 local utils = require "utils"
-local 
+
 
 function init(...)
-    local gamelist = utils.getmgr('dbmgr').req.gamelist()
-    local roomlist = utils.getmgr('dbmgr').req.roomlist()
-
-    
-
+    local retcode,gamelist = utils.getmgr('dbmgr').req.gamelist()
+    if retcode == errs.code.SUCCESS then
+        utils.getmgr('redismgr').post.initgamelist(gamelist)
+    end
+    local retcode,roomlist = utils.getmgr('dbmgr').req.roomlist()
+    if retcode == errs.code.SUCCESS then
+        utils.getmgr('redismgr').post.initroomlist(roomlist)
+    end
 end
 
 function response.gamelist()

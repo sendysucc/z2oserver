@@ -62,7 +62,7 @@ function response.gamelist()
         dberror(ret.errno,ret.sqlstate)
         return errs.code.EXECUTE_DB_SCRIPT_ERROR
     else
-        return errs.code.SUCCESS,ret[1][1]
+        return errs.code.SUCCESS,ret
     end
 end
 
@@ -73,6 +73,6 @@ function response.roomlist()
         dberror(ret.errno,ret.sqlstate)
         return errs.code.EXECUTE_DB_SCRIPT_ERROR
     else
-        return errs.code.SUCCESS,ret[1][1]
+        return errs.code.SUCCESS,ret
     end
 end

@@ -159,7 +159,6 @@ local function filluserdata(orginUser)
     for k,v in pairs(orginUser) do
         newUser[k] = v
     end
-
     return newUser
 end
 
@@ -178,13 +177,16 @@ function REQUEST.login(fd,args)
     --login from redis first
     local redis_user = utils.getmgr('redismgr').req.getPlayerbyPhone(phone)
     if redis_user then 
-        print('---------->login from redis')
         if password ~= redis_user.password then
             return { errcode = errs.code.PASSWORD_MISS }
         end
+
+        if redis_user.online == "1" then
+            return { errcode = errs.code.ALREADY_LOGIN }
+        end
+
         resp = redis_user
     else
-        print('---------->login from mysql')
         local _errcode, mysql_user = utils.getmgr('dbmgr').req.login(phone,password)
         if errcode ~= errs.code.SUCCESS then
             return { errcode = _errcode }
@@ -197,10 +199,13 @@ function REQUEST.login(fd,args)
         utils.getmgr('redismgr').post.addPlayer(mysql_user)
     end
 
+    --将后续的消息转发给hall
     local hallobj = snax.queryservice('hall')
     local addr = skynet.queryservice("gated")
     skynet.send(addr,"lua","forward",fd,hallobj,resp.userid)
 
+    utils.getmgr('redismgr').post.playeronline(resp.userid)
+    --清理auth中的用户数据
     clear_client(fd)
 
     return resp

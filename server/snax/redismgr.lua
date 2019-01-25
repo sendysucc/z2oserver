@@ -40,7 +40,13 @@ local function _getPlayerbyId(uid)
     return reverseT(res)
 end
 
-
+local function _setplayerval(uid,name,val)
+    local key = prefix_player .. uid
+    local res = reverseT(db:hgetall(key))
+    if res.userid then
+        db:hset(key,name,val)
+    end
+end
 
 function init(...)
     local conf = {
@@ -96,4 +102,56 @@ end
 
 function response.getPlayerbyId(uid)
     return _getPlayerbyId(uid)
+end
+
+function accept.setlayerval(uid,key,val)
+    _setplayerval(uid,key,val)
+end
+
+function accept.playeroffline(uid)
+    _setplayerval(uid,"online",0)
+end
+
+function accept.playeronline(uid)
+    _setplayerval(uid,"online",1)
+end
+
+function accept.initgamelist(gamelist)
+    for k,v in pairs(gamelist) do
+        local key = "Game:" .. v.gameid
+        db:hmset(key,table.unpack( convertT(v)))
+    end
+end
+
+function accept.initroomlist(roomlist)
+    for k,v in pairs(roomlist) do
+        local key = "Room:" .. v.gameid .. ":" .. v.roomid
+        db:hmset(key,table.unpack( convertT(v)))
+    end
+end
+
+function response.getgamelist()
+    local glist = {}
+    local rlist = {}
+    local keys = db:keys("Game:*")
+    if #keys <= 0 then
+        return errs.code.NO_GAME_AVAILABLE
+    end
+
+    for k,v in pairs(keys) do
+        local game = reverseT( db:hgetall(v) )
+        table.insert(glist,game)
+    end
+
+    local keys = db:keys("Room:*")
+    if #keys <= 0 then
+        return errs.code.NO_GAME_AVAILABLE
+    end
+
+    for k,v in pairs(keys) do
+        local room = reverseT( db:hgetall(v) )
+        table.insert(rlist,room)
+    end
+
+    return errs.code.SUCCESS, glist,rlist
 end

@@ -140,3 +140,23 @@ request = host:attach(sproto.new( loadproto.getprotobin("./server/protocol/hall_
 send_request("gamelist")
 rets = receive_data()
 print('-------->gamelist',rets.errcode)
+for k,v in pairs(rets.games) do
+	for _k,_v in pairs(v)	do
+		print('game:',_k,_v)
+	end
+end
+
+for k,v in pairs(rets.rooms) do
+	for _k,_v in pairs(v)	do
+		print('room:',_k,_v)
+	end
+end
+
+send_request("notice",{id = 0})
+rets = receive_data()
+print('------>notice:',rets.errcode)
+
+
+send_request("mails",{id = 0})
+rets = receive_data()
+print('------->mails:',rets.errcode)

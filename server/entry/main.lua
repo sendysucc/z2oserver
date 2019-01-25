@@ -8,6 +8,8 @@ skynet.start(function()
 
     snax.uniqueservice("redismgr")
 
+    snax.uniqueservice('gamemgr')
+
     snax.uniqueservice("hall")
 
     local auth = snax.newservice("auth")

@@ -4,6 +4,7 @@ local loadproto = require "loadproto"
 local sproto = require "sproto"
 local playermgr = require "playermgr"
 local errs = require "errorcodes"
+local utils = require "utils"
 
 local sp_host
 local sp_request
@@ -31,15 +32,31 @@ function response.message(uid,msg,sz)
 end
 
 function response.disconnect(uid)
-    print('=---------<disconnect')
-
-    print('-------> disconnected :', uid)
+    utils.getmgr('redismgr').post.playeroffline(uid)
 end
 
+--游戏列表
 function REQUEST.gamelist(uid,args)
-    print('------>uid:',uid,'request game list')
-    return { errcode = errs.code.SUCCESS }
+    local ecode , glist,rlist = utils.getmgr('redismgr').req.getgamelist()
+    return { errcode = ecode, games = glist, rooms = rlist }
 end
 
+--公告
+function REQUEST.notice(uid,args)
 
+end
 
+--消息
+function REQUEST.mail(uid,args)
+
+end
+
+--匹配游戏
+function REQUEST.match(uid,args)
+
+end
+
+--充值
+function REQUEST.recharge(uid,args)
+
+end

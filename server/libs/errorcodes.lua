@@ -17,6 +17,9 @@ error.code = {
     ACCOUNT_FORBIDDEN = 13,
     LOGIN_INFO_ERR = 14,
     PLAYER_BREAKLINE = 15,
+    ALREADY_LOGIN = 16,
+    NO_GAME_AVAILABLE = 17,
+    NO_ROOM_AVAILABLE = 18,
 
 }
 
@@ -37,6 +40,10 @@ error.reason = {
     [error.code.ACCOUNT_FORBIDDEN] = '账户被禁用',
     [error.code.LOGIN_INFO_ERR] = '请提供账户和密码',
     [error.code.PLAYER_BREAKLINE] = '玩家短线重新登录',
+    [error.code.ALREADY_LOGIN] = '账号已经登录',
+    [error.code.NO_GAME_AVAILABLE] = '没有游戏',
+    [error.code.NO_ROOM_AVAILABLE] = '没有房间',
+
 
 }
 
