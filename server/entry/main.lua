@@ -10,6 +10,8 @@ skynet.start(function()
 
     snax.uniqueservice('gamemgr')
 
+    snax.uniqueservice('queue')
+
     snax.uniqueservice("hall")
 
     local auth = snax.newservice("auth")

@@ -146,17 +146,24 @@ for k,v in pairs(rets.games) do
 	end
 end
 
+local games = rets.games
+
 for k,v in pairs(rets.rooms) do
 	for _k,_v in pairs(v)	do
 		print('room:',_k,_v)
 	end
 end
 
-send_request("notice",{id = 0})
-rets = receive_data()
-print('------>notice:',rets.errcode)
+local rooms = rets.rooms
+-- send_request("notice",{id = 0})
+-- rets = receive_data()
+-- print('------>notice:',rets.errcode)
 
 
-send_request("mails",{id = 0})
+-- send_request("mails",{id = 0})
+-- rets = receive_data()
+-- print('------->mails:',rets.errcode)
+
+send_request('match',{ gameid= rooms[1].gameid , roomid= rooms[1].roomid })
 rets = receive_data()
-print('------->mails:',rets.errcode)
+print('=----------->match:', rets.errcode)

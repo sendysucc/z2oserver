@@ -20,7 +20,13 @@ error.code = {
     ALREADY_LOGIN = 16,
     NO_GAME_AVAILABLE = 17,
     NO_ROOM_AVAILABLE = 18,
-
+    PLAYER_NOT_FOUND = 19,
+    GAME_NOT_FOUND = 20,
+    ROOM_NOT_FOUND = 21,
+    GAME_MAINTENANCE = 22,
+    GOLD_LIMITS = 23,
+    PLAY_MULTI_GAME_SAME_TIME = 24,
+    ALREADY_MATCHING = 25,
 }
 
 error.reason = {
@@ -43,7 +49,13 @@ error.reason = {
     [error.code.ALREADY_LOGIN] = '账号已经登录',
     [error.code.NO_GAME_AVAILABLE] = '没有游戏',
     [error.code.NO_ROOM_AVAILABLE] = '没有房间',
-
+    [error.code.PLAYER_NOT_FOUND] = '无法找到玩家信息',
+    [error.code.GAME_NOT_FOUND] = '没有找到游戏',
+    [error.code.ROOM_NOT_FOUND] = '没有找到房间',
+    [error.code.GAME_MAINTENANCE] = '游戏维护中',
+    [error.code.GOLD_LIMITS] = '金币不足',
+    [error.code.PLAY_MULTI_GAME_SAME_TIME] = '另一个游戏正在进行中',
+    [error.code.ALREADY_MATCHING] = '已经在匹配游戏中,请稍等',
 
 }
 

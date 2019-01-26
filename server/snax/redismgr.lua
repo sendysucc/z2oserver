@@ -155,3 +155,21 @@ function response.getgamelist()
 
     return errs.code.SUCCESS, glist,rlist
 end
+
+function response.getgameinfo(gameid)
+    local keys = "Game:" .. gameid
+    local gameinfo = reverseT(db:hgetall(keys))
+    if not gameinfo.gameid then
+        return errs.code.GAME_NOT_FOUND
+    end
+    return errs.code.SUCCESS,gameinfo
+end
+
+function response.getroominfo(gameid,roomid)
+    local keys = "Room:" .. gameid .. ":" .. roomid
+    local roominfo = reverseT(db:hgetall(keys))
+    if not roominfo.roomid then
+        return errs.code.ROOM_NOT_FOUND
+    end
+    return errs.code.SUCCESS,roominfo
+end

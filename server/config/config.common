@@ -3,7 +3,8 @@ snroot = "$SRVROOT/skynet/"
 
 luaservice = snroot .. "service/?.lua;" .. srvroot .. "entry/?.lua;" .. srvroot .. "service/?.lua;"
 lualoader = snroot .. "lualib/loader.lua"
-lua_path = snroot .. "lualib/?.lua;" .. snroot .. "lualib/?/init.lua;" .. srvroot .. "libs/?.lua;"
+data_path = srvroot .. "data/?.lua;"
+lua_path = snroot .. "lualib/?.lua;" .. snroot .. "lualib/?/init.lua;" .. srvroot .. "libs/?.lua;" .. data_path
 lua_cpath = snroot .. "luaclib/?.so"
 cpath = snroot .. "cservice/?.so"
 

@@ -8,6 +8,7 @@ local connection = {}
 local handler = {}
 local CMD = {}
 local authobj
+local uid_fd = {}
 
 local function sendmsg(fd,msg)
     local c = connection[fd]
@@ -61,6 +62,9 @@ function handler.disconnect(fd)
         local obj = snax.bind(c.agent.handle, c.agent.type)
         local id = c.uid or fd
         local ret = obj.req.disconnect(id)
+        if uid_fd[id] then
+            uid_fd[id] = nil
+        end
         connection[fd] = nil
     end
 end
@@ -91,11 +95,23 @@ end
 function CMD.forward(source,fd,obj,uid)
     local c = assert(connection[fd])
     c.agent = obj
-    c.uid = uid
+    if uid then
+        c.uid = uid
+        uid_fd[uid] = fd
+    end
 end
 
 function CMD.closeclient(source,fd)
     closeclient(fd)
+end
+
+function CMD.sendmsg(source,uids,msg)
+    for k,uid in pairs(uids) do
+        local fd = uid_fd[uid]
+        if fd then
+            sendmsg(fd,msg)
+        end
+    end
 end
 
 gateserver.start(handler)
