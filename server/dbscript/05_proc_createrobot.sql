@@ -27,23 +27,19 @@ label_createrob:begin
     set r_idx = 1;
 
     if robottype <=> 1 then
-        set defaultwealth = 45;
         set typebase = 100;
     elseif robottype <=> 2 then
-        set defaultwealth = 545;
         set typebase = 1000;
     elseif robottype <=> 3 then
-        set defaultwealth = 7400;
         set typebase = 10000;
     elseif robottype <=> 4 then
-        set defaultwealth = 67400;
         set typebase = 100000;
     elseif robottype <=> 5 then
-        set defaultwealth = 867450;
         set typebase = 1000000;
-    end
-
-    
+    else 
+        select 'robot type error'
+        leave label_createrob;
+    end if;
 
     select max(userid) into maxrobotid from User where User.isrobot = 1 ;
     if ifnull(maxrobotid,0) <=> 0 then
@@ -60,12 +56,12 @@ label_createrob:begin
         set r_gender = ( r_idx % 3 + 1) % 2;  #男:女 = 2:1
         set r_password = sha1(r_cellphone);
         set r_gold = floor(rand() * typebase);
-        if r_gold < 10 then
-            set r_gold = defaultwealth;
+        if r_gold < typebase/10 then
+            set r_gold = r_gold + typebase /2 ;
         end if;
         set r_diamond = floor(rand() * typebase);
-        if r_diamond < 10 then
-            set r_diamond = defaultwealth;
+        if r_diamond < typebase /10 then
+            set r_diamond = r_diamond + typebase/2;
         end if;
 
         insert into User(userid,username,nickname,avatoridx,gender,cellphone,password,gold,diamond,createtime,disable,agentid,promoteid,isrobot) 
