@@ -93,7 +93,7 @@ function REQUEST.match(uid,args)
 
     --check money weather enought
     print('--->gold:', player.gold, 'minentry:',roominfo.minentry)
-    if (player.gold or 0) < (roominfo.minentry or 2) then
+    if (tonumber(player.gold) or 0) < (tonumber(roominfo.minentry) or 2) then
         return { errcode = errs.code.GOLD_LIMITS }
     end
 
@@ -112,7 +112,7 @@ function REQUEST.match(uid,args)
 
     local resp = {}
 
-    return { errcode = errs.code.SUCCESS }
+    return { errcode = matchinfo.errcode }
 
 end
 

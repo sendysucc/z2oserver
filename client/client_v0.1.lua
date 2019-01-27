@@ -164,6 +164,7 @@ local rooms = rets.rooms
 -- rets = receive_data()
 -- print('------->mails:',rets.errcode)
 
-send_request('match',{ gameid= rooms[1].gameid , roomid= rooms[1].roomid })
+-- send_request('match',{ gameid= rooms[1].gameid , roomid= rooms[1].roomid })
+send_request('match',{ gameid= 30001 , roomid= 6 })
 rets = receive_data()
 print('=----------->match:', rets.errcode)

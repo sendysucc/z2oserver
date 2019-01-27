@@ -10,3 +10,15 @@ insert into GameRoom(roomid,name,minentry,maxentry,gameid,enable) value (1,'体�
 insert into GameRoom(roomid,name,minentry,maxentry,gameid,enable) value (2,'中级房',200,900,20001,true);
 insert into GameRoom(roomid,name,minentry,maxentry,gameid,enable) value (3,'高级房',1000,10000,20001,true);
 insert into GameRoom(roomid,name,minentry,maxentry,gameid,enable) value (4,'VIP房',20000,900000,20001,true);
+
+insert into GameRoom(roomid,name,minentry,maxentry,gameid,enable) value (5,'体验房',10,100,30001,true);
+insert into GameRoom(roomid,name,minentry,maxentry,gameid,enable) value (6,'中级房',200,900,30001,true);
+insert into GameRoom(roomid,name,minentry,maxentry,gameid,enable) value (7,'高级房',1000,10000,30001,true);
+
+
+call proc_createrobots(1,500);
+call proc_createrobots(2,500);
+call proc_createrobots(3,500);
+call proc_createrobots(4,200);
+call proc_createrobots(5,100);
+

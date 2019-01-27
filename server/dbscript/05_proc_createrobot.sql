@@ -37,7 +37,7 @@ label_createrob:begin
     elseif robottype <=> 5 then
         set typebase = 1000000;
     else 
-        select 'robot type error'
+        select 'robot type error';
         leave label_createrob;
     end if;
 

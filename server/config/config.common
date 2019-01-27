@@ -8,4 +8,5 @@ lua_path = snroot .. "lualib/?.lua;" .. snroot .. "lualib/?/init.lua;" .. srvroo
 lua_cpath = snroot .. "luaclib/?.so"
 cpath = snroot .. "cservice/?.so"
 
-snax = srvroot .. "snax/?.lua;"
+gamepath = srvroot .. "games/?/?.lua;"
+snax = srvroot .. "snax/?.lua;" .. gamepath

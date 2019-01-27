@@ -88,7 +88,6 @@ function accept.addPlayer(userinfo)
     db:hmset(key, table.unpack(convertT(userinfo)) )
 end
 
-
 function response.getPlayerbyPhone(phone)
     local keys = db:keys("Player:*")
     for k,val in pairs(keys) do
@@ -172,4 +171,11 @@ function response.getroominfo(gameid,roomid)
         return errs.code.ROOM_NOT_FOUND
     end
     return errs.code.SUCCESS,roominfo
+end
+
+function accept.loadrobots(robots)
+    for k,v in pairs(robots) do
+        local key = prefix_player .. v.userid
+        db:hmset(key, table.unpack(convertT(v)) )
+    end
 end

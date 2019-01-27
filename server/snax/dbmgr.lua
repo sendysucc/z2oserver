@@ -76,3 +76,14 @@ function response.roomlist()
         return errs.code.SUCCESS,ret
     end
 end
+
+function response.loadrobots(idx,count)
+    local sql_str = string.format("call proc_loadrobots(%d,%d)",idx,count)
+    local ret = db:query(sql_str)
+    if ret.badresult then
+        dberror(ret.errno,ret.sqlstate)
+        return errs.code.EXECUTE_DB_SCRIPT_ERROR
+    else
+        return errs.code.SUCCESS, ret[1]
+    end
+end

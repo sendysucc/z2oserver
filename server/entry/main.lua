@@ -4,11 +4,13 @@ snax = require "skynet.snax"
 skynet.start(function() 
     skynet.error("main entry")
 
-    snax.uniqueservice("dbmgr")
+    snax.uniqueservice('dbmgr')
 
-    snax.uniqueservice("redismgr")
+    snax.uniqueservice('redismgr')
 
     snax.uniqueservice('gamemgr')
+
+    snax.uniqueservice('robotmgr')
 
     snax.uniqueservice('queue')
 

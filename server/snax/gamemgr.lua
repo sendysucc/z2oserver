@@ -14,12 +14,3 @@ function init(...)
         utils.getmgr('redismgr').post.initroomlist(roomlist)
     end
 end
-
-function response.gamelist()
-
-end
-
-function response.roomlist()
-
-end
-
