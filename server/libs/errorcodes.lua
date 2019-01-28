@@ -27,6 +27,7 @@ error.code = {
     GOLD_LIMITS = 23,
     PLAY_MULTI_GAME_SAME_TIME = 24,
     ALREADY_MATCHING = 25,
+    NO_ROBOT_AVAILABLE = 26,
 }
 
 error.reason = {
@@ -56,6 +57,7 @@ error.reason = {
     [error.code.GOLD_LIMITS] = '金币不足',
     [error.code.PLAY_MULTI_GAME_SAME_TIME] = '另一个游戏正在进行中',
     [error.code.ALREADY_MATCHING] = '已经在匹配游戏中,请稍等',
+    [error.code.NO_ROBOT_AVAILABLE] = '没有可用的机器人',
 
 }
 

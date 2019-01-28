@@ -107,13 +107,12 @@ function REQUEST.match(uid,args)
     skynet.wait()
 
     local matchinfo = match_request[uid].matched
-
     match_request[uid] = nil
-
     local resp = {}
-
-    return { errcode = matchinfo.errcode }
-
+    
+    local addr = skynet.queryservice("gated")
+    skynet.send(addr,"lua","forward",uid, matchinfo.serviceobj ,uid)
+    return { errcode = matchinfo.errcode , players = matchinfo.players }
 end
 
 --充值

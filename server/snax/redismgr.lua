@@ -176,6 +176,7 @@ end
 function accept.loadrobots(robots)
     for k,v in pairs(robots) do
         local key = prefix_player .. v.userid
+        v.busy = false
         db:hmset(key, table.unpack(convertT(v)) )
     end
 end

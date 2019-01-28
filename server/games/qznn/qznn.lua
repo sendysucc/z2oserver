@@ -10,8 +10,8 @@ local sp_request
 local REQUEST = {}
 
 function init(...)
-    sp_host = sproto.new( loadproto.getprotobin("./protocol/bjl_c2s.spt") ):host "package"
-    sp_request = sp_host:attach( sproto.new( loadproto.getprotobin("./protocol/bjl_s2c.spt") ) )
+    sp_host = sproto.new( loadproto.getprotobin("./protocol/qznn_c2s.spt") ):host "package"
+    sp_request = sp_host:attach( sproto.new( loadproto.getprotobin("./protocol/qznn_s2c.spt") ) )
 end
 
 function response.message(uid,msg,sz)
@@ -31,7 +31,7 @@ function response.message(uid,msg,sz)
 end
 
 function response.disconnect(uid)
-    skynet.error('[bjl] user disconnect :',uid)
+    skynet.error('[qznn] user disconnect :',uid)
     utils.getmgr('redismgr').post.playeroffline(uid)
 end
 

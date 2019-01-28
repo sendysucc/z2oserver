@@ -93,7 +93,10 @@ function CMD.setsecret(source,secret)
 end
 
 function CMD.forward(source,fd,obj,uid)
-    local c = assert(connection[fd])
+    local c = connection[fd]
+    if not c then
+        c = assert(connection[uid_fd[fd]])
+    end
     c.agent = obj
     if uid then
         c.uid = uid

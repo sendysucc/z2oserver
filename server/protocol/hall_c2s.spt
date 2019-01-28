@@ -66,6 +66,16 @@ recharge 4 {
 }
 
 #匹配游戏
+.seats {
+    userid 0 : integer
+    nickname 1 : string
+    avatoridx 2 : integer
+    seatno 3 : integer
+    gender 4 : integer
+    gold 5 : integer
+    diamond 6 : integer    
+}
+
 match 5 {
     request {
         gameid 0 : integer
@@ -73,6 +83,6 @@ match 5 {
     }
     response {
         errcode 0 : integer
-
+        players 1 : *seats
     }
 }

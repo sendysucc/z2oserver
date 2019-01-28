@@ -12,23 +12,23 @@ local test_uid
 local function mathing()
     for gid , gque in pairs(queue) do
         for rid , rque in pairs(gque) do
-
-            local ret0,gameinfo = utils.getmgr('redismgr').req.getgameinfo(gid)
-            local ret1,roominfo = utils.getmgr('redismgr').req.getroominfo(gid,rid)
-            if  ret0 ~= errs.code.SUCCESS or gameinfo.enable == '0' or ret1 ~= errs.code.SUCCESS or roominfo.enable == '0' then    -- 通知所有排队的玩家,游戏维护中
-                while #rque > 0 do
-                    local uid = table.remove(rque,1)
-                    utils.getmgr('hall').post.matched(uid,{ errcode = errs.code.GAME_MAINTENANCE })
-                end
-            end
-
-            local minplayer = roominfo.minplayers 
-            local maxplayer = roominfo.maxplayers
-            local gametype = gameinfo.gametype
-            local servicename = assert(gamedata[gid].name)
-            
             while #rque > 0 do
-                if gametype == "1" or gametype == 1 then    --百人游戏
+                local ret0,gameinfo = utils.getmgr('redismgr').req.getgameinfo(gid)
+                local ret1,roominfo = utils.getmgr('redismgr').req.getroominfo(gid,rid)
+                if  ret0 ~= errs.code.SUCCESS or gameinfo.enable == '0' or ret1 ~= errs.code.SUCCESS or roominfo.enable == '0' then    -- 通知所有排队的玩家,游戏维护中
+                    while #rque > 0 do
+                        local uid = table.remove(rque,1)
+                        utils.getmgr('hall').post.matched(uid,{ errcode = errs.code.GAME_MAINTENANCE })
+                    end
+                end
+                local minplayer = tonumber(gameinfo.minplayers)
+                local maxplayer = tonumber(gameinfo.maxplayers)
+                local minentry = tonumber( roominfo.minentry )
+                local maxentry = tonumber(roominfo.maxentry)
+                local gametype = tonumber(gameinfo.gametype)
+                local servicename = assert(gamedata[gid].name)
+
+                if gametype == 1 then    --百人游戏
                     local alloc_gobj = 0
                     if game_services[gid] and game_services[gid][rid] and game_services[gid][rid].onlines < 100 then
                         game_services[gid][rid].onlines = game_services[gid][rid].onlines + 1
@@ -42,14 +42,60 @@ local function mathing()
                     end
                     local alloc_uid = table.remove(rque,1)
                     utils.getmgr('hall').post.matched(alloc_uid,{ errcode = errs.code.SUCCESS , serviceobj = alloc_gobj })
-                elseif gametype == "2" or gametype == 2 then    --对战类游戏
+                elseif gametype == 2 then    --对战类游戏
                     local queuecount = #rque
-                    if queuecount < minplayer then  --need robots
+                    local playercount = math.random(minplayer,maxplayer)
+                    local matched_players = {}
+                    local robotcount = 0
+                    local match_succ = true
 
-                    elseif queuecount >= minplayer and queuecount <= maxplayer then
+                    if queuecount < playercount then
+                        robotcount = playercount - queuecount
+                    end
 
-                    elseif queuecount > maxplayer then
+                    for i = 1, robotcount do
+                        local robot = utils.getmgr('robotmgr').req.getidelrobot(minentry,maxentry)
+                        if robot then
+                            table.insert(matched_players,robot)
+                        else
+                            match_succ = false
+                            for k,per in pairs(matched_players) do
+                                if per.isrobot then
+                                    utils.getmgr('robotmgr').post.freerobot(per.userid)
+                                end
+                            end
+                            matched_players = {}
+                        end
+                    end
 
+                    if not match_succ then
+                        break
+                    end
+
+                    for i = 1 , playercount - robotcount do
+                        local uid =  table.remove(rque,1)
+                        local playerinfo = utils.getmgr('redismgr').req.getPlayerbyId(uid)
+                        table.insert(matched_players,playerinfo)
+                    end
+
+                    if #matched_players ~= playercount then
+                        break
+                    end
+                    local gamesrvobj = snax.newservice(servicename)
+                    
+                    local _seatnos = {}
+                    for i =1, maxplayer do
+                        _seatnos[i] = i
+                    end
+                    
+                    for k,v in pairs(matched_players) do
+                        v.seatno = table.remove(_seatnos, math.random(1,#_seatnos))
+                    end
+
+                    for k,pers in pairs(matched_players) do
+                        if not pers.isrobot or pers.isrobot == '0'  then
+                            utils.getmgr('hall').post.matched(pers.userid,{ errcode = errs.code.SUCCESS , serviceobj = gamesrvobj , players = matched_players })
+                        end
                     end
                 end
             end
@@ -60,7 +106,7 @@ end
 function init(...)
     skynet.fork(function()
         while true do
-            skynet.sleep(200)
+            skynet.sleep(250)
             mathing()
         end
     end)
