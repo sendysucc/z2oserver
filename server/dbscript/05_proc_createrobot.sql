@@ -52,6 +52,9 @@ label_createrob:begin
         set r_username = concat('10000', newrobotid);
         set r_nickname = concat('z2o玩家',newrobotid);
         set r_avatoridx = r_idx % 10;
+        if r_avatoridx <=> 0 then
+            set r_avatoridx = 10;
+        end if;
         set r_cellphone = r_username;
         set r_gender = ( r_idx % 3 + 1) % 2;  #男:女 = 2:1
         set r_password = sha1(r_cellphone);

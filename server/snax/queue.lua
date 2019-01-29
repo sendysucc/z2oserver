@@ -42,6 +42,7 @@ local function mathing()
                     end
                     local alloc_uid = table.remove(rque,1)
                     utils.getmgr('hall').post.matched(alloc_uid,{ errcode = errs.code.SUCCESS , serviceobj = alloc_gobj })
+                    alloc_gobj.post.player_join(alloc_uid)
                 elseif gametype == 2 then    --对战类游戏
                     local queuecount = #rque
                     local playercount = math.random(minplayer,maxplayer)
@@ -97,6 +98,12 @@ local function mathing()
                             utils.getmgr('hall').post.matched(pers.userid,{ errcode = errs.code.SUCCESS , serviceobj = gamesrvobj , players = matched_players })
                         end
                     end
+
+                    local join_players = {}
+                    for k, per in pairs(matched_players) do
+                        table.insert(join_players,{seatno = per.seatno, userid = per.userid})
+                    end
+                    gamesrvobj.post.game_init(join_players)
                 end
             end
         end
@@ -117,4 +124,3 @@ function accept.match(uid,gameid,roomid)
     queue[gameid][roomid] = queue[gameid][roomid] or {}
     table.insert(queue[gameid][roomid],uid)
 end
-

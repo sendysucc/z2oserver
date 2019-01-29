@@ -8,6 +8,7 @@ local utils = require "utils"
 local sp_host
 local sp_request
 local REQUEST = {}
+local players = {}
 
 function init(...)
     sp_host = sproto.new( loadproto.getprotobin("./protocol/bjl_c2s.spt") ):host "package"
@@ -35,7 +36,7 @@ function response.disconnect(uid)
     utils.getmgr('redismgr').post.playeroffline(uid)
 end
 
-function accept.game_init(players)
-
+function accept.player_join(player)
+    print('[bjl] -- >player :', player)
 end
 
