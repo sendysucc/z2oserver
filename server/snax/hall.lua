@@ -111,7 +111,7 @@ function REQUEST.match(uid,args)
     local resp = {}
     
     local addr = skynet.queryservice("gated")
-    skynet.send(addr,"lua","forward",uid, matchinfo.serviceobj ,uid)
+    skynet.send(addr,"lua","forward",uid, matchinfo.serviceobj )
     return { errcode = matchinfo.errcode , players = matchinfo.players }
 end
 

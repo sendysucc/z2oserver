@@ -2,3 +2,9 @@
     type 0 : integer
     session 1 : integer
 }
+
+#游戏解散
+dismiss 1 {
+}
+
+

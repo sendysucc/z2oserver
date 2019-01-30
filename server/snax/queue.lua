@@ -113,7 +113,7 @@ end
 function init(...)
     skynet.fork(function()
         while true do
-            skynet.sleep(250)
+            skynet.sleep(300)
             mathing()
         end
     end)
