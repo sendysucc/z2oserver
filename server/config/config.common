@@ -5,7 +5,7 @@ luaservice = snroot .. "service/?.lua;" .. srvroot .. "entry/?.lua;" .. srvroot 
 lualoader = snroot .. "lualib/loader.lua"
 data_path = srvroot .. "data/?.lua;"
 
-game_lib = srvroot .. "games/bjl/?.lua;" .. srvroot .. "games/qznn/?.lua;"
+game_lib = srvroot .. "games/bjl/?.lua;" .. srvroot .. "games/qznn/?.lua;" .. srvroot .. "games/common/?.lua;"
 
 lua_path = snroot .. "lualib/?.lua;" .. snroot .. "lualib/?/init.lua;" .. srvroot .. "libs/?.lua;" .. data_path .. game_lib
 lua_cpath = snroot .. "luaclib/?.so"
