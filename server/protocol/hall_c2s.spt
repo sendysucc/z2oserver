@@ -31,26 +31,39 @@ gamelist 1 {
 }
 
 #公告
+
+.notice_item {
+    id 0 : integer      #消息id
+    read 1 : boolean        #是否已读
+    msg 2 : string
+    datetime 3 : string     #公告时间
+}
+
 notice 2 {
     request {
         id 0 : integer #本地已有的公告id
     }
     response {
-
+        errcode 0 : integer
+        notices 1 : *notice_item
     }
 }
 
 #消息
-mails 3 {
+.mail_item {
+    id 0 : integer   #消息序号
+    read 1 : boolean       #是否已读
+    msg 2 : string
+    datetime 3 : string     #消息时间
+}
+
+mail 3 {
     request {
         id 0 : integer #本地已有的消息id
     }
     response {
         errcode 0 : integer
-        id 1 : integer
-        read 2 : boolean
-        msg 3 : string
-        datetime 4 : string
+        mails 1 : *mail_item
     }
 }
 

@@ -113,7 +113,7 @@ function response.disconnect(uid)
     skynet.error('[qznn] user disconnect :',uid)
     utils.getmgr('redismgr').post.playeroffline(uid)
 
-    if not isplaying() then
+    if not isplaying() then --游戏没开始,则解散桌子
         local users = {}
         for k,_uid in pairs(seats) do
             if tonumber(_uid) ~= uid and tonumber(_uid) < 900000 then
@@ -124,6 +124,8 @@ function response.disconnect(uid)
             sendmsg(users,"dismiss")
         end
         snax.exit()
+    else    --游戏中途退出, 则托管
+
     end
 end
 
@@ -134,12 +136,14 @@ function accept.game_init(players)
         local userid = players[i].userid
         seats[seatno] = userid
     end
-
     init_game_status()
-
     setplayingstatu(true)
 end
 
+-- 是否继续,如果有一个玩家不再继续,则解散游戏,并将继续的玩家加入到新的排队队列中.
+function REQUEST.continue(uid,beagain)
+
+end
 
 cb_start = function()
     print('----------> cb_start')
