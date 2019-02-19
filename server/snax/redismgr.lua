@@ -28,13 +28,6 @@ local function reverseT(origin_table)
 end
 
 local function _getPlayerbyId(uid)
-    -- local mytes = db:keys("*")
-    -- print('-------keys----->:',mytes)
-    -- print('-------keys----->: len = ',#mytes)
-    -- for k,v in pairs(mytes) do
-    --     print(k,v)
-    -- end
-
     local key = prefix_player .. uid
     local res = db:hgetall(key)
     return reverseT(res)
@@ -46,6 +39,11 @@ local function _setplayerval(uid,name,val)
     if res.userid then
         db:hset(key,name,val)
     end
+end
+
+local function _removeplayerval(uid,fieldname)
+    local key = prefix_player .. uid
+    db:hdel(key,fieldname)
 end
 
 function init(...)
@@ -180,3 +178,11 @@ function accept.loadrobots(robots)
         db:hmset(key, table.unpack(convertT(v)) )
     end
 end
+
+--设置玩家正在玩的游戏服务 handle 和名字
+function accept.setplayinggame(uid,handle,srvname)
+    _setplayerval(uid,"gaminghandle",handle)
+    _setplayerval(uid,"gamingsrvname",srvname)
+end
+
+

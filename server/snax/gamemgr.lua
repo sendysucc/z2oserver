@@ -3,6 +3,7 @@ local snax = require "skynet.snax"
 local errs = require "errorcodes"
 local utils = require "utils"
 
+--[[管理游戏维护以及更新]]
 
 function init(...)
     local retcode,gamelist = utils.getmgr('dbmgr').req.gamelist()

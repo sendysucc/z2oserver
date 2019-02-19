@@ -125,7 +125,7 @@ function response.disconnect(uid)
         end
         snax.exit()
     else    --游戏中途退出, 则托管
-
+        
     end
 end
 
