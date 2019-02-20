@@ -50,6 +50,7 @@ local function mathing()
                     local robotcount = 0
                     local match_succ = true
 
+                    --如果真人数不足,则加载机器人
                     if queuecount < playercount then
                         robotcount = playercount - queuecount
                     end
@@ -73,6 +74,7 @@ local function mathing()
                         break
                     end
 
+                    --加载真人玩家
                     for i = 1 , playercount - robotcount do
                         local uid =  table.remove(rque,1)
                         local playerinfo = utils.getmgr('redismgr').req.getPlayerbyId(uid)
@@ -93,15 +95,20 @@ local function mathing()
                         v.seatno = table.remove(_seatnos, math.random(1,#_seatnos))
                     end
 
+                    --通知真人玩家匹配成功信息
                     for k,pers in pairs(matched_players) do
                         if not pers.isrobot or pers.isrobot == '0'  then
                             utils.getmgr('hall').post.matched(pers.userid,{ errcode = errs.code.SUCCESS , serviceobj = gamesrvobj , players = matched_players })
                         end
                     end
 
+                    --戏服务初始化本局玩家信息,并开始游戏
                     local join_players = {}
                     for k, per in pairs(matched_players) do
                         table.insert(join_players,{seatno = per.seatno, userid = per.userid})
+                        
+                        --设置玩家正在玩的游戏服务
+                        utils.getmgr('redismgr').post.setplayinggame(per.userid, gamesrvobj.handle, gamesrvobj.type)
                     end
                     gamesrvobj.post.game_init(join_players)
                 end
