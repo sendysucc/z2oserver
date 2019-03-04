@@ -1,6 +1,4 @@
-local sharedata = require "skynet.sharedata"
-
-local prefix = 'player_'
+local prefix = 'Player:'
 local pmg = {}
 
 pmg.update = function(uid, key, val)

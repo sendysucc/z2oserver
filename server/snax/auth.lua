@@ -165,7 +165,7 @@ end
 function REQUEST.login(fd,args)
     local phone = args.cellphone
     local password = args.password
-    local errcode = errs.code.SUCCESS
+    
 
     if not phone or not password then
         return { errcode = errs.code.LOGIN_INFO_ERR }
@@ -174,25 +174,36 @@ function REQUEST.login(fd,args)
     password = sha1(password)
 
     local resp = {}
+    
     --login from redis first
     local redis_user = utils.getmgr('redismgr').req.getPlayerbyPhone(phone)
     if redis_user then 
         if password ~= redis_user.password then
             return { errcode = errs.code.PASSWORD_MISS }
         end
-
         if redis_user.online == "1" then
             return { errcode = errs.code.ALREADY_LOGIN }
         end
-
         resp = redis_user
+
+        skynet.error('----> playing game service handle: ' .. tostring(redis_user.gaminghandle) .. '  service name:' .. redis_user.gamingsrvname)
+        
+        if redis_user.gaminghandle then
+            resp.errcode = errs.code.PLAYER_BREAKLINE
+            resp.gamingname = redis_user.gamingsrvname
+            resp.gaminghandle = tonumber(redis_user.gaminghandle)
+        else
+            resp.errcode = errs.code.SUCCESS    
+        end
+
     else
         local _errcode, mysql_user = utils.getmgr('dbmgr').req.login(phone,password)
-        if errcode ~= errs.code.SUCCESS then
+        if _errcode ~= errs.code.SUCCESS then
             return { errcode = _errcode }
         end
         
         resp = filluserdata(mysql_user)
+        resp.errcode = _errcode
 
         mysql_user.errcode = nil
         --add player to redis

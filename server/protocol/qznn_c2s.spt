@@ -2,3 +2,13 @@
     type 0 : integer
     session 1 : integer
 }
+
+reconnect 1 {
+    request {
+        srvname 0 : string
+        srvhandle 1 : integer
+    }
+    response {
+
+    }
+}

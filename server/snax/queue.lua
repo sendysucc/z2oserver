@@ -106,9 +106,6 @@ local function mathing()
                     local join_players = {}
                     for k, per in pairs(matched_players) do
                         table.insert(join_players,{seatno = per.seatno, userid = per.userid})
-                        
-                        --设置玩家正在玩的游戏服务
-                        utils.getmgr('redismgr').post.setplayinggame(per.userid, gamesrvobj.handle, gamesrvobj.type)
                     end
                     gamesrvobj.post.game_init(join_players)
                 end

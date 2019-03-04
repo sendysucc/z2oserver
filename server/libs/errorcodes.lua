@@ -46,7 +46,7 @@ error.reason = {
     [error.code.PASSWORD_MISS] = '密码错误',
     [error.code.ACCOUNT_FORBIDDEN] = '账户被禁用',
     [error.code.LOGIN_INFO_ERR] = '请提供账户和密码',
-    [error.code.PLAYER_BREAKLINE] = '玩家短线重新登录',
+    [error.code.PLAYER_BREAKLINE] = '玩家断线重新登录',
     [error.code.ALREADY_LOGIN] = '账号已经登录',
     [error.code.NO_GAME_AVAILABLE] = '没有游戏',
     [error.code.NO_ROOM_AVAILABLE] = '没有房间',
@@ -58,7 +58,6 @@ error.reason = {
     [error.code.PLAY_MULTI_GAME_SAME_TIME] = '另一个游戏正在进行中',
     [error.code.ALREADY_MATCHING] = '已经在匹配游戏中,请稍等',
     [error.code.NO_ROBOT_AVAILABLE] = '没有可用的机器人',
-
 }
 
 

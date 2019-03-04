@@ -119,3 +119,20 @@ end
 function REQUEST.recharge(uid,args)
 
 end
+
+--断线重连
+function REQUEST.reconnect(uid,args)
+    local handle = args.handle
+    local name = args.servicename
+
+    print('[hall] --- > reconnect , handle:' .. tostring(handle) .. '  servicename:' .. tostring(name))
+
+    local gameobj = snax.bind(handle,name)
+    if not gameobj then
+        return {errcode = errs.code.FAILED}
+    end
+
+    --获取恢复游戏需要的信息，返回给客户端.  并将后续客户端的消息转发给游戏服务
+
+    return {errcode = errs.code.SUCCESS}
+end

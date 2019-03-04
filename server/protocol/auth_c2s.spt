@@ -65,5 +65,7 @@ login 6 {
         password 6 : string
         gold 7 : integer
         diamond 8 : integer
+        gamingname 9 : string
+        gaminghandle 10 : integer
     }
 }

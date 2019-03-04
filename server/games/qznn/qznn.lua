@@ -123,9 +123,10 @@ function response.disconnect(uid)
         if #users > 0 then
             sendmsg(users,"dismiss")
         end
+        print('------->游戏还没开始就退出')
         snax.exit()
     else    --游戏中途退出, 则托管
-        
+        print('------->游戏中途退出')
     end
 end
 
@@ -135,6 +136,10 @@ function accept.game_init(players)
         local seatno = players[i].seatno
         local userid = players[i].userid
         seats[seatno] = userid
+
+        --设置玩家正在玩的游戏服务
+        utils.getmgr('redismgr').post.setplayinggame(userid, snax.self().handle, snax.self().type)
+
     end
     init_game_status()
     setplayingstatu(true)
@@ -175,4 +180,6 @@ end
 
 cb_stop = function()
     print('--------> cb_stop')
+
+
 end

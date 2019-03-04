@@ -99,3 +99,13 @@ match 5 {
         players 1 : *seats
     }
 }
+
+reconnect 6 {
+    request {
+        handle 0 : integer
+        servicename 1 : string
+    }
+    response {
+        errcode 0 : integer
+    }
+}
