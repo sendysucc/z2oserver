@@ -16,7 +16,7 @@ skynet.start(function()
 
     snax.uniqueservice("hall")
 
-    local auth = snax.newservice("auth")
+    local auth = snax.uniqueservice("auth")
 
     local gate = skynet.uniqueservice('gated')
     skynet.send(gate,"lua","open", {

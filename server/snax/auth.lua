@@ -216,6 +216,7 @@ function REQUEST.login(fd,args)
     skynet.send(addr,"lua","forward",fd,hallobj,resp.userid)
 
     utils.getmgr('redismgr').post.playeronline(resp.userid)
+    
     --清理auth中的用户数据
     clear_client(fd)
 

@@ -10,10 +10,7 @@ local sesion = 1
 local sp_host
 local sp_request
 local REQUEST = {}
-local _isplaying = false
-local game_status
-local turn_expire_time
-local seats = {}
+
 local _callbacks = {}
 local cb_start
 local cb_election
@@ -23,6 +20,15 @@ local cb_combination
 local cb_compare
 local cb_bonus
 local cb_stop
+
+--游戏信息
+local _isplaying = false    --是否游戏中
+local game_status           --游戏阶段
+local turn_expire_time      --计时器
+local seats = {}            --座位上的玩家
+local gamesn                --当局游戏局号
+local banker                --庄家座位号
+
 
 local function register_method(statu, callback)
     _callbacks[statu] = callback
@@ -145,6 +151,10 @@ function accept.game_init(players)
     setplayingstatu(true)
 end
 
+function response.gamestatus()
+
+end
+
 -- 是否继续,如果有一个玩家不再继续,则解散游戏,并将继续的玩家加入到新的排队队列中.
 function REQUEST.continue(uid,beagain)
 
@@ -178,6 +188,7 @@ cb_bonus = function()
     print('----------> cb_bonus')
 end
 
+-- 当 STOP状态时, 要将短线的玩家的标志(redis 里的 gaminghandle)去掉
 cb_stop = function()
     print('--------> cb_stop')
 

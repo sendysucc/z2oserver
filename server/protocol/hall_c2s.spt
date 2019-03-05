@@ -78,15 +78,19 @@ recharge 4 {
     }
 }
 
+
 #匹配游戏
 .seats {
-    userid 0 : integer
-    nickname 1 : string
-    avatoridx 2 : integer
-    seatno 3 : integer
-    gender 4 : integer
-    gold 5 : integer
-    diamond 6 : integer    
+    userid 0 : integer          #玩家id
+    nickname 1 : string         #昵称
+    avatoridx 2 : integer       #头像id
+    seatno 3 : integer          #座位号
+    gender 4 : integer          #性别
+    gold 5 : integer            #金币数
+    diamond 6 : integer         #钻石数
+    banker 7 : boolean          #是否是庄家
+    holdcards 8 : *integer      #手牌
+    stage 9 : integer           #玩家处于的游戏状态
 }
 
 match 5 {
@@ -107,5 +111,9 @@ reconnect 6 {
     }
     response {
         errcode 0 : integer
+        gamestatu 1 : integer       #游戏阶段
+        expiretime 2 : integer      #当前阶段剩余时间
+        gamesn 3 : string           #游戏局号
+        players 4 : *seats          #桌上的玩家
     }
 }

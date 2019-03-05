@@ -104,6 +104,8 @@ function REQUEST.match(uid,args)
     utils.getmgr('queue').post.match(uid,gameid,roomid)
     match_request[uid] = {}
     match_request[uid].co = coroutine.running()
+
+    --等待匹配成功返回
     skynet.wait()
 
     local matchinfo = match_request[uid].matched
