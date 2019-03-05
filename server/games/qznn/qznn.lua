@@ -121,9 +121,9 @@ function response.disconnect(uid)
 
     if not isplaying() then --游戏没开始,则解散桌子
         local users = {}
-        for k,_uid in pairs(seats) do
-            if tonumber(_uid) ~= uid and tonumber(_uid) < 900000 then
-                table.insert(users,_uid)
+        for k,player in pairs(seats) do
+            if tonumber(player.userid) ~= uid and tonumber(player.userid) < 900000 then
+                table.insert(users,player.userid)
             end
         end
         if #users > 0 then
@@ -138,13 +138,16 @@ end
 
 function accept.game_init(players)
     for i = 1, #players do
-        print('[qznn] -- > game_init:  ',players[i].seatno , players[i].userid)
+        print('[qznn] -- > game_init:  ---- player informs ---------1')
+        for k,v in pairs(players[i]) do
+            print(k,v)
+        end
+        print('[qznn] -- > game_init:  ---- player informs ---------2')
         local seatno = players[i].seatno
-        local userid = players[i].userid
-        seats[seatno] = userid
+        seats[seatno] = players[i]
 
         --设置玩家正在玩的游戏服务
-        utils.getmgr('redismgr').post.setplayinggame(userid, snax.self().handle, snax.self().type)
+        utils.getmgr('redismgr').post.setplayinggame(players[i].userid, snax.self().handle, snax.self().type)
 
     end
     init_game_status()

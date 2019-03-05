@@ -144,46 +144,46 @@ if rets.errcode == 15 then
 end
 
 
--- send_request("gamelist")
+send_request("gamelist")
+rets = receive_data()
+print('-------->gamelist',rets.errcode)
+for k,v in pairs(rets.games) do
+	for _k,_v in pairs(v)	do
+		print('game:',_k,_v)
+	end
+end
+
+local games = rets.games
+
+for k,v in pairs(rets.rooms) do
+	for _k,_v in pairs(v)	do
+		print('room:',_k,_v)
+	end
+end
+
+local rooms = rets.rooms
+-- send_request("notice",{id = 0})
 -- rets = receive_data()
--- print('-------->gamelist',rets.errcode)
--- for k,v in pairs(rets.games) do
--- 	for _k,_v in pairs(v)	do
--- 		print('game:',_k,_v)
--- 	end
--- end
+-- print('------>notice:',rets.errcode)
 
--- local games = rets.games
-
--- for k,v in pairs(rets.rooms) do
--- 	for _k,_v in pairs(v)	do
--- 		print('room:',_k,_v)
--- 	end
--- end
-
--- local rooms = rets.rooms
--- -- send_request("notice",{id = 0})
--- -- rets = receive_data()
--- -- print('------>notice:',rets.errcode)
-
--- -- send_request("mails",{id = 0})
--- -- rets = receive_data()
--- -- print('------->mails:',rets.errcode)
-
--- -- send_request('match',{ gameid= rooms[1].gameid , roomid= rooms[1].roomid })
--- send_request('match',{ gameid= 20001 , roomid= 2 })
--- -- send_request('match',{ gameid= 30001 , roomid= 6 })
+-- send_request("mails",{id = 0})
 -- rets = receive_data()
--- print('=----------->match:', rets.errcode)
--- for k,v in pairs(rets.players) do
--- 	for _k,_v in pairs(v) do
--- 		print(_k,_v)
--- 	end
--- end
+-- print('------->mails:',rets.errcode)
 
--- -- host = sproto.new( loadproto.getprotobin("./server/protocol/bjl_s2c.spt") ):host "package"
--- -- request = host:attach(sproto.new( loadproto.getprotobin("./server/protocol/bjl_c2s.spt")) )
+-- send_request('match',{ gameid= rooms[1].gameid , roomid= rooms[1].roomid })
+send_request('match',{ gameid= 20001 , roomid= 2 })
+-- send_request('match',{ gameid= 30001 , roomid= 6 })
+rets = receive_data()
+print('=----------->match:', rets.errcode)
+for k,v in pairs(rets.players) do
+	for _k,_v in pairs(v) do
+		print(_k,_v)
+	end
+end
 
--- -- send_request('hello', {msg="hello from client !"})
--- -- rets = receive_data()
--- -- print('----->bjl msg:',rets.msg)
+-- host = sproto.new( loadproto.getprotobin("./server/protocol/bjl_s2c.spt") ):host "package"
+-- request = host:attach(sproto.new( loadproto.getprotobin("./server/protocol/bjl_c2s.spt")) )
+
+-- send_request('hello', {msg="hello from client !"})
+-- rets = receive_data()
+-- print('----->bjl msg:',rets.msg)

@@ -9,6 +9,20 @@ local game_services = {}
 
 local test_uid 
 
+local function clean_userinfo(playerinfo)
+    playerinfo.createtime = nil
+    playerinfo.cellphone = nil
+    playerinfo.promoteid = nil
+    playerinfo.password = nil
+    playerinfo.online = nil
+    playerinfo.disable = nil
+    playerinfo.agentid = nil
+    playerinfo.gamingsrvname = nil
+    playerinfo.gaminghandle = nil
+    return playerinfo
+    
+end
+
 local function mathing()
     for gid , gque in pairs(queue) do
         for rid , rque in pairs(gque) do
@@ -78,6 +92,7 @@ local function mathing()
                     for i = 1 , playercount - robotcount do
                         local uid =  table.remove(rque,1)
                         local playerinfo = utils.getmgr('redismgr').req.getPlayerbyId(uid)
+                        playerinfo = clean_userinfo(playerinfo)
                         table.insert(matched_players,playerinfo)
                     end
 
@@ -103,11 +118,7 @@ local function mathing()
                     end
 
                     --戏服务初始化本局玩家信息,并开始游戏
-                    local join_players = {}
-                    for k, per in pairs(matched_players) do
-                        table.insert(join_players,{seatno = per.seatno, userid = per.userid})
-                    end
-                    gamesrvobj.post.game_init(join_players)
+                    gamesrvobj.post.game_init(matched_players)
                 end
             end
         end

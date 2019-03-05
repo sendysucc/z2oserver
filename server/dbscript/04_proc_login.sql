@@ -20,6 +20,7 @@ label_login:begin
     declare o_avatoridx int;
     declare o_gold int;
     declare o_diamond int;
+    declare o_isrobot tinyint;
 
     set errcode = 0;
     set o_paswd = '';
@@ -37,8 +38,8 @@ label_login:begin
         leave label_login;
     end if;
 
-    select userid, username, nickname, gender, createtime, disable, agentid, promoteid, avatoridx, gold , diamond into 
-        o_userid, o_username, o_nickname, o_gender, o_createtime, o_disable, o_agentid ,o_promoteid, o_avatoridx, o_gold, o_diamond from User where User.cellphone = cellphone;
+    select userid, username, nickname, gender, createtime, disable, agentid, promoteid, avatoridx, gold , diamond,isrobot into 
+        o_userid, o_username, o_nickname, o_gender, o_createtime, o_disable, o_agentid ,o_promoteid, o_avatoridx, o_gold, o_diamond, o_isrobot from User where User.cellphone = cellphone;
 
     if ifnull(o_disable,0) <=> 1 then
         set errcode = 13;
@@ -47,6 +48,6 @@ label_login:begin
     end if;
 
     select errcode as 'errcode', o_userid as 'userid', o_username as 'username', o_nickname as 'nickname', o_gender as 'gender', cellphone as 'cellphone',
-        passwd as 'password', o_createtime as 'createtime', o_disable as 'disable', o_agentid as 'agentid', o_promoteid as 'promoteid' , o_avatoridx as 'avatoridx', o_gold as 'gold', o_diamond as 'diamond';
+        passwd as 'password', o_createtime as 'createtime', o_disable as 'disable', o_agentid as 'agentid', o_promoteid as 'promoteid' , o_avatoridx as 'avatoridx', o_gold as 'gold', o_diamond as 'diamond', o_isrobot as 'isrobot';
 end
 ;;
