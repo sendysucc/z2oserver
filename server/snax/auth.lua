@@ -186,7 +186,7 @@ function REQUEST.login(fd,args)
         end
         resp = redis_user
 
-        skynet.error('----> playing game service handle: ' .. tostring(redis_user.gaminghandle) .. '  service name:' .. redis_user.gamingsrvname)
+        skynet.error('----> playing game service handle: ' .. tostring(redis_user.gaminghandle) .. '  service name:' .. tostring(redis_user.gamingsrvname))
         
         if redis_user.gaminghandle then
             resp.errcode = errs.code.PLAYER_BREAKLINE

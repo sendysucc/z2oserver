@@ -41,9 +41,11 @@ local function _setplayerval(uid,name,val)
     end
 end
 
-local function _removeplayerval(uid,fieldname)
+local function _removeplayerval(uid,fields)
     local key = prefix_player .. uid
-    db:hdel(key,fieldname)
+    for k,v in pairs(fields) do
+        db:hdel(key,v)
+    end
 end
 
 function init(...)
@@ -186,3 +188,6 @@ function accept.setplayinggame(uid,handle,srvname)
 end
 
 
+function accept.clearuservalue(uid,fields)
+    _removeplayerval(uid,fields)
+end

@@ -12,3 +12,13 @@ reconnect 1 {
 
     }
 }
+
+quitgame 2 {
+    request {
+
+    }
+
+    response {
+        errcode 0 : integer
+    }
+}

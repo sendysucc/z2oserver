@@ -1,5 +1,5 @@
-package.cpath = "../skynet/luaclib/?.so"
-package.path = "../skynet/lualib/?.lua;" .. "./server/libs/?.lua"
+package.cpath = "./skynet/luaclib/?.so"
+package.path = "./skynet/lualib/?.lua;" .. "./server/libs/?.lua"
 
 local socket = require "client.socket"
 local sproto = require "sproto"

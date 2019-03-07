@@ -51,6 +51,14 @@ local function isplaying()
     return _isplaying
 end
 
+local function cleargaminginfos(uid)
+    utils.getmgr('redismgr').post.clearuservalue(uid,{"gaminghandle","gamingsrvname"})
+end
+
+local function setgaminginfos(uid)
+    utils.getmgr('redismgr').post.setplayinggame(uid, snax.self().handle, snax.self().type)
+end
+
 local function set_game_status(statu)
     game_status = statu
     turn_expire_time = logic.expires[statu]
@@ -119,20 +127,32 @@ function response.disconnect(uid)
     skynet.error('[qznn] user disconnect :',uid)
     utils.getmgr('redismgr').post.playeroffline(uid)
 
+
     if not isplaying() then --游戏没开始,则解散桌子
         local users = {}
         for k,player in pairs(seats) do
             if tonumber(player.userid) ~= uid and tonumber(player.userid) < 900000 then
                 table.insert(users,player.userid)
             end
+            --todo：清除玩家redis中记录的 gamingsrvname , gamingsrhandle 
+            cleargaminginfos(player.userid)
         end
         if #users > 0 then
             sendmsg(users,"dismiss")
         end
+
         print('------->游戏还没开始就退出')
+
         snax.exit()
     else    --游戏中途退出, 则托管
         print('------->游戏中途退出')
+
+        for seat, player in pairs(seats) do
+            if player.userid == uid then
+                player.breakline = true
+            end
+        end
+        
     end
 end
 
@@ -147,8 +167,7 @@ function accept.game_init(players)
         seats[seatno] = players[i]
 
         --设置玩家正在玩的游戏服务
-        utils.getmgr('redismgr').post.setplayinggame(players[i].userid, snax.self().handle, snax.self().type)
-
+        setgaminginfos(player[i].userid)
     end
     init_game_status()
     setplayingstatu(true)
@@ -159,8 +178,14 @@ function response.gamestatus()
 end
 
 -- 是否继续,如果有一个玩家不再继续,则解散游戏,并将继续的玩家加入到新的排队队列中.
-function REQUEST.continue(uid,beagain)
+function REQUEST.continue(uid,args)
 
+end
+
+function REQUEST.quitgame(uid,args)
+    if game_status ~= logic.stage.STOP then
+        return { errcode = errs.code.NOT_ALLOW_QUIT_GAME }
+    end
 end
 
 cb_start = function()
@@ -195,5 +220,7 @@ end
 cb_stop = function()
     print('--------> cb_stop')
 
-
+    for seatno, player in pairs(seats) do
+        cleargaminginfos(player.userid)
+    end
 end

@@ -28,6 +28,7 @@ error.code = {
     PLAY_MULTI_GAME_SAME_TIME = 24,
     ALREADY_MATCHING = 25,
     NO_ROBOT_AVAILABLE = 26,
+    NOT_ALLOW_QUIT_GAME = 27,
 }
 
 error.reason = {
@@ -58,6 +59,7 @@ error.reason = {
     [error.code.PLAY_MULTI_GAME_SAME_TIME] = '另一个游戏正在进行中',
     [error.code.ALREADY_MATCHING] = '已经在匹配游戏中,请稍等',
     [error.code.NO_ROBOT_AVAILABLE] = '没有可用的机器人',
+    [error.code.NOT_ALLOW_QUIT_GAME] = '游戏进行中不允许退出',
 }
 
 
