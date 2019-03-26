@@ -1,6 +1,6 @@
 #!/bin/sh
 
-sudo mysql -uroot < ./01_init_db.sql
+sudo mysql -uroot -phansen < ./01_init_db.sql
 
 WEBPATH=`find ~ -name "z2oWebend" -type d | head -1`
 rm -rf $WEBPATH/ProxyAgent/*.pyc

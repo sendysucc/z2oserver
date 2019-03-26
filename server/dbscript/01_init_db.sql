@@ -4,7 +4,7 @@ create database if not exists z2oserver default charset utf8 collate utf8_genera
 
 use z2oserver;
 
-drop user 'sendy'@'%';
+drop user if exists  'sendy'@'%';
 
 create user 'sendy'@'%' identified by 'sendy';
 
