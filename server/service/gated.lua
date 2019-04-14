@@ -25,6 +25,7 @@ local function closeclient(fd)
     connection[fd] = nil
 end
 
+--服务端监听socket建立成功后，会调用 handler.open 方法
 function handler.open(source,conf)
 
 end
@@ -37,9 +38,9 @@ function handler.message(fd,msg,sz)
     end
     
     if c.agent then
-        local authobj = snax.bind(c.agent.handle,c.agent.type )
+        local agent = snax.bind(c.agent.handle,c.agent.type )
         local id = c.uid or fd
-        local resp = authobj.req.message(id,msg,sz)
+        local resp = agent.req.message(id,msg,sz)
         if resp then
             sendmsg(fd,resp)
         end 

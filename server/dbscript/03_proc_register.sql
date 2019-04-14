@@ -4,7 +4,7 @@ drop procedure if exists proc_register;
 
 delimiter ;;
 
-create procedure proc_register (IN cellphone varchar(11), IN passwd varchar(40), IN agentcode varchar(6),IN promotecode varchar(50))
+create procedure proc_register (IN cellphone varchar(11), IN passwd varchar(40), IN agentcode varchar(20),IN promotecode varchar(50))
 label_reg:begin
     declare errcode int;
     declare o_agentid int;

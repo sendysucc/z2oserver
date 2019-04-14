@@ -127,8 +127,6 @@ function REQUEST.reconnect(uid,args)
     local handle = args.handle
     local name = args.servicename
 
-    print('[hall] --- > reconnect , handle:' .. tostring(handle) .. '  servicename:' .. tostring(name))
-
     local gameobj = snax.bind(handle,name)
     if not gameobj then
         return {errcode = errs.code.FAILED}
